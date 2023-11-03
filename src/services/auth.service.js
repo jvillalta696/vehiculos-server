@@ -32,3 +32,29 @@ export const deleteUser = async(uid)=>{
     console.log('Error deleting user:', error);
   }
 }
+
+export const getAllUsers = async()=>{
+  try {
+    let listUsers = []
+    const listAllUsers = async(nextPageToken) => {
+      // List batch of users, 1000 at a time.
+       await auth
+        .listUsers(1000, nextPageToken)
+        .then((listUsersResult) => {
+          listUsers = [...listUsers,listUsersResult.users].flat();
+          if (listUsersResult.pageToken) {
+            // List next batch of users.
+            listAllUsers(listUsersResult.pageToken);
+          }
+        })
+        .catch((error) => {
+          console.log('Error listing users:', error);
+        });
+    };
+    // Start listing users from the beginning, 1000 at a time.
+    await listAllUsers();
+    return listUsers
+  } catch (error) {
+    throw error;
+  }
+}
