@@ -1,4 +1,4 @@
-import { createUser, deleteUser, getUserByEmail } from "../services/auth.service.js"
+import { createUser, deleteUser, getAllUsers, getUserByEmail } from "../services/auth.service.js"
 
 export const create = async(req,res)=>{    
     const user  = req.body
@@ -24,8 +24,17 @@ export const deleteUsr = async(req,res)=>{
     const {uid} = req.params;
     deleteUser(uid).then((id)=>{
         console.log(id);
-        res.status(201).json({message: `Successfully deleted user: ${id}`})
+        res.status(204).json({message: `Successfully deleted user: ${id}`})
     }).catch((error)=>{
         res.status(400).json({message: `Error to delete user: ${error}`, error})
+    })
+}
+
+export const getAll = async (req,res)=>{
+    getAllUsers().then((list)=>{
+        console.log(list);
+        res.status(200).json(list)
+    }).catch((error)=>{
+        res.status(400).json({message: `Error to get all users: ${error}`, error})
     })
 }
